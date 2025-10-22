@@ -1,0 +1,236 @@
+<!-- filename: split.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SplitFlow for Mac - Split View</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #f5f5f7;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e5e7;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .header input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            background: #fafafa;
+        }
+
+        .header input:focus {
+            outline: none;
+            border-color: #007aff;
+            background: white;
+        }
+
+        .header button {
+            padding: 8px 18px;
+            background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .header button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+        }
+
+        .header button:active {
+            transform: scale(0.98);
+        }
+
+        .header button.swap {
+            background: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        .header button.swap:hover {
+            background: #e5e5e7;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            background: #e5e5e7;
+            overflow: hidden;
+        }
+
+        .iframe-container {
+            position: relative;
+            background: white;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #86868b;
+            font-size: 14px;
+            display: none;
+        }
+
+        .iframe-container.loading .loading {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <input type="text" id="url1" placeholder="URL 1 (mis: https://example.com)" />
+        <input type="text" id="url2" placeholder="URL 2 (mis: https://wikipedia.org)" />
+        <button id="openBtn">Open</button>
+        <button class="swap" id="swapBtn">⇄ Swap</button>
+    </div>
+    <div class="content">
+        <div class="iframe-container" id="container1">
+            <div class="loading">Loading...</div>
+            <iframe id="frame1"
+                sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
+        </div>
+        <div class="iframe-container" id="container2">
+            <div class="loading">Loading...</div>
+            <iframe id="frame2"
+                sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const url1Input = document.getElementById('url1');
+        const url2Input = document.getElementById('url2');
+        const frame1 = document.getElementById('frame1');
+        const frame2 = document.getElementById('frame2');
+        const container1 = document.getElementById('container1');
+        const container2 = document.getElementById('container2');
+        const openBtn = document.getElementById('openBtn');
+        const swapBtn = document.getElementById('swapBtn');
+
+        // Load URLs from query parameters
+        function loadFromQuery() {
+            const params = new URLSearchParams(window.location.search);
+            const u1 = params.get('u1');
+            const u2 = params.get('u2');
+
+            if (u1) {
+                const decodedUrl1 = decodeURIComponent(u1);
+                url1Input.value = decodedUrl1;
+                loadIframe(frame1, container1, decodedUrl1);
+            }
+
+            if (u2) {
+                const decodedUrl2 = decodeURIComponent(u2);
+                url2Input.value = decodedUrl2;
+                loadIframe(frame2, container2, decodedUrl2);
+            }
+        }
+
+        // Load iframe with loading state
+        function loadIframe(iframe, container, url) {
+            container.classList.add('loading');
+
+            // Add protocol if missing
+            const fullUrl = url.match(/^https?:\/\//) ? url : 'https://' + url;
+            iframe.src = fullUrl;
+
+            // Remove loading after timeout
+            setTimeout(() => {
+                container.classList.remove('loading');
+            }, 2000);
+        }
+
+        // Open URLs in iframes
+        function openUrls() {
+            const u1 = url1Input.value.trim();
+            const u2 = url2Input.value.trim();
+
+            if (u1) {
+                loadIframe(frame1, container1, u1);
+            }
+
+            if (u2) {
+                loadIframe(frame2, container2, u2);
+            }
+        }
+
+        // Swap URLs
+        function swapUrls() {
+            // Swap input values
+            const temp = url1Input.value;
+            url1Input.value = url2Input.value;
+            url2Input.value = temp;
+
+            // Swap iframe sources
+            const tempSrc = frame1.src;
+            loadIframe(frame1, container1, url2Input.value);
+            loadIframe(frame2, container2, url1Input.value);
+        }
+
+        // Event listeners
+        openBtn.addEventListener('click', openUrls);
+        swapBtn.addEventListener('click', swapUrls);
+
+        // Allow Enter key to open
+        url1Input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') openUrls();
+        });
+        url2Input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') openUrls();
+        });
+
+        // Remove loading on iframe load
+        frame1.addEventListener('load', () => {
+            container1.classList.remove('loading');
+        });
+        frame2.addEventListener('load', () => {
+            container2.classList.remove('loading');
+        });
+
+        // Initialize
+        loadFromQuery();
+    </script>
+</body>
+
+</html>

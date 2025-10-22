@@ -1,0 +1,58 @@
+{
+    "manifest_version": 3,
+    "name": "SplitFlow for Mac — Smart Split & Tiling",
+    "version": "1.0.0",
+    "description": "Split screen multiple windows with 2/3/4 panel layouts optimized for macOS. Freemium: 2 panels free, 4 panels Pro.",
+    "permissions": [
+        "storage",
+        "tabs",
+        "windows",
+        "notifications",
+        "webRequest"
+    ],
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "128": "icons/icon128.png"
+        }
+    },
+    "icons": {
+        "128": "icons/icon128.png"
+    },
+    "commands": {
+        "split-2h": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+2",
+                "mac": "Command+Shift+2"
+            },
+            "description": "Split 2 horizontal"
+        },
+        "split-2v": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+3",
+                "mac": "Command+Shift+3"
+            },
+            "description": "Split 2 vertical"
+        },
+        "merge-all": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+M",
+                "mac": "Command+Shift+M"
+            },
+            "description": "Merge all windows"
+        },
+        "split-fullscreen": {
+            "suggested_key": {
+                "mac": "Command+Shift+F"
+            },
+            "description": "Toggle fullscreen for current window (Mac)"
+        }
+    }
+}

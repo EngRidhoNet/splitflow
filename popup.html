@@ -1,0 +1,471 @@
+<!-- filename: popup.html -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>SplitFlow for Mac</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            width: 420px;
+            padding: 16px;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+            font-size: 14px;
+            color: #1d1d1f;
+            background: #f5f5f7;
+        }
+
+        h2 {
+            margin: 0 0 4px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #86868b;
+            margin-bottom: 16px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .status {
+            font-size: 12px;
+            color: #86868b;
+            padding: 4px 10px;
+            background: #f5f5f7;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .status.pro {
+            background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            color: white;
+        }
+
+        .user-section {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-section label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #86868b;
+            margin-bottom: 6px;
+        }
+
+        .user-section input {
+            width: calc(100% - 90px);
+            padding: 8px 12px;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .user-section input:focus {
+            outline: none;
+            border-color: #007aff;
+        }
+
+        .user-section button {
+            padding: 8px 16px;
+            margin-left: 8px;
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: inherit;
+        }
+
+        .user-section button:hover {
+            background: #0051d5;
+        }
+
+        .user-section button:active {
+            transform: scale(0.98);
+        }
+
+        .mac-notice {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: linear-gradient(135deg, #007aff15 0%, #5856d615 100%);
+            border: 1px solid #007aff30;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #1d1d1f;
+            line-height: 1.5;
+        }
+
+        .mac-notice strong {
+            color: #007aff;
+        }
+
+        .layout-section {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 12px;
+        }
+
+        .layout-picker {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .layout-option {
+            padding: 12px 8px;
+            border: 2px solid #e5e5e7;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            background: #fafafa;
+        }
+
+        .layout-option:hover {
+            border-color: #007aff;
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .layout-option.selected {
+            border-color: #007aff;
+            background: linear-gradient(135deg, #007aff15 0%, #5856d615 100%);
+        }
+
+        .layout-option.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .layout-icon {
+            width: 100%;
+            height: 35px;
+            margin: 0 auto 8px;
+            background: #e5e5e7;
+            border-radius: 6px;
+            display: flex;
+            gap: 2px;
+            padding: 4px;
+        }
+
+        .layout-icon.h2 {
+            flex-direction: row;
+        }
+
+        .layout-icon.v2 {
+            flex-direction: column;
+        }
+
+        .layout-icon.h3 {
+            flex-direction: row;
+        }
+
+        .layout-icon.v3 {
+            flex-direction: column;
+        }
+
+        .layout-icon.grid4 {
+            flex-wrap: wrap;
+        }
+
+        .layout-icon>div {
+            flex: 1;
+            background: #007aff;
+            border-radius: 3px;
+        }
+
+        .layout-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .tab-list {
+            max-height: 280px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border-bottom: 1px solid #f5f5f7;
+        }
+
+        .tab-item:last-child {
+            border-bottom: none;
+        }
+
+        .tab-item:hover {
+            background: #fafafa;
+        }
+
+        .tab-favicon {
+            width: 16px;
+            height: 16px;
+            margin-right: 10px;
+            flex-shrink: 0;
+            border-radius: 3px;
+        }
+
+        .tab-title {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 13px;
+            color: #1d1d1f;
+        }
+
+        .slot-selector {
+            display: flex;
+            gap: 6px;
+            margin-left: 8px;
+        }
+
+        .slot-radio {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border: 2px solid #e5e5e7;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #86868b;
+        }
+
+        .slot-radio:hover {
+            border-color: #007aff;
+            background: #f0f7ff;
+        }
+
+        .slot-radio.selected {
+            border-color: #007aff;
+            background: #007aff;
+            color: white;
+        }
+
+        .slot-radio.pro-only {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .slot-radio input {
+            display: none;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e5e7;
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.98);
+        }
+
+        .upgrade-link {
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .upgrade-link a {
+            color: #007aff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .upgrade-link a:hover {
+            text-decoration: underline;
+        }
+
+        .shortcuts-hint {
+            margin-top: 12px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            font-size: 11px;
+            color: #86868b;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .shortcuts-hint kbd {
+            padding: 2px 6px;
+            background: #f5f5f7;
+            border: 1px solid #e5e5e7;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div>
+            <h2>SplitFlow for Mac</h2>
+            <div class="subtitle">Smart Window Tiling</div>
+        </div>
+        <div class="status" id="planStatus">Free</div>
+    </div>
+
+    <div class="mac-notice">
+        <strong>🍎 Mac Optimized:</strong> Layouts disesuaikan dengan menu bar & dock. Gunakan <kbd>⌘⇧F</kbd> untuk
+        toggle fullscreen.
+    </div>
+
+    <div class="user-section">
+        <label>User ID</label>
+        <input type="text" id="userIdInput" placeholder="Masukkan User ID" />
+        <button id="saveUserId">Simpan</button>
+    </div>
+
+    <div class="layout-section">
+        <div class="section-title">Pilih Layout</div>
+        <div class="layout-picker">
+            <div class="layout-option" data-layout="2h">
+                <div class="layout-icon h2">
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="layout-label">2 Horizontal</div>
+            </div>
+            <div class="layout-option" data-layout="2v">
+                <div class="layout-icon v2">
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="layout-label">2 Vertical</div>
+            </div>
+            <div class="layout-option" data-layout="4" id="layout4">
+                <div class="layout-icon grid4">
+                    <div style="width:48%;height:48%"></div>
+                    <div style="width:48%;height:48%"></div>
+                    <div style="width:48%;height:48%"></div>
+                    <div style="width:48%;height:48%"></div>
+                </div>
+                <div class="layout-label">4 Grid</div>
+            </div>
+            <div class="layout-option" data-layout="3h" id="layout3h">
+                <div class="layout-icon h3">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="layout-label">3 Horizontal</div>
+            </div>
+            <div class="layout-option" data-layout="3v" id="layout3v">
+                <div class="layout-icon v3">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="layout-label">3 Vertical</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-list" id="tabList"></div>
+
+    <div class="actions">
+        <button class="btn btn-primary" id="splitBtn">Split</button>
+        <button class="btn btn-secondary" id="mergeBtn">Gabungkan Semua</button>
+    </div>
+
+    <div class="upgrade-link">
+        <a href="https://your-site.com/checkout" target="_blank">
+            <span>🚀</span>
+            <span>Upgrade ke Pro</span>
+        </a>
+    </div>
+
+    <div class="shortcuts-hint">
+        Shortcuts: <kbd>⌘⇧2</kbd> 2H • <kbd>⌘⇧3</kbd> 2V • <kbd>⌘⇧4</kbd> 4 Grid • <kbd>⌘⇧M</kbd> Merge
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
